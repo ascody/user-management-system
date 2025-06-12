@@ -1,13 +1,14 @@
 package tabbychiro.userManagementSystem.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 @AllArgsConstructor
-public class UserLoginDto {
+@Builder
+public class UserResponseDto {
+    private Long id;
     private String username;
-    private String password;
+    private String nickname;
 }

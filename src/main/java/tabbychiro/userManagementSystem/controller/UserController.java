@@ -1,12 +1,13 @@
 package tabbychiro.userManagementSystem.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tabbychiro.userManagementSystem.dto.AuthTokenDto;
-import tabbychiro.userManagementSystem.dto.ResponseDto;
+import tabbychiro.userManagementSystem.dto.UserResponseDto;
 import tabbychiro.userManagementSystem.dto.UserLoginDto;
 import tabbychiro.userManagementSystem.dto.UserRegisterDto;
 import tabbychiro.userManagementSystem.service.UserService;
@@ -21,8 +22,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseDto> register(@RequestBody UserRegisterDto dto) {
-        return ResponseEntity.ok(userService.register(dto));
+    public ResponseEntity<UserResponseDto> register(@RequestBody UserRegisterDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(dto));
     }
 
     @PostMapping("/login")
