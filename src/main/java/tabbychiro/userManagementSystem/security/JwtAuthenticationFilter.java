@@ -22,10 +22,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String token = jwtTokenProvider.resolveToken(request);
 
+        System.out.println("[JwtFilter] Token: " + token);
+
         if (token != null && jwtTokenProvider.validateToken(token)) {
             var authentication = jwtTokenProvider.getAuthentication(token);
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            System.out.println("[JwtFilter] Authentication: " + authentication);
+            if (authentication != null) {
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                System.out.println("[JwtFilter] SecurityContext 설정 완료");
+            } else {
+                System.out.println("[JwtFilter] 유효하지 않은 토큰");
+            }
         }
 
         filterChain.doFilter(request, response);

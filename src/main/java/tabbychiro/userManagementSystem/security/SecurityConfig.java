@@ -43,7 +43,7 @@ public class SecurityConfig {
                                 "/api/users/register",
                                 "/login", "/register",
                                 "/login.html", "/register.html",
-                                "/css/**", "/js/**").permitAll()
+                                "/css/**", "/js/**", "/index.html", "/").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

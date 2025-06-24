@@ -6,5 +6,29 @@
 </head>
 <body>
 <h1>Welcome to User Management System</h1>
+<h2 id="welcome"></h2>
+
+<script>
+    console.log("index loaded");
+    const token = localStorage.getItem("accessToken");
+
+    fetch("/api/users/me", {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then (res => {
+        if (!res.ok) throw new Error("인증 실패");
+        return res.json();
+    })
+    .then (data => {
+        document.getElementById("welcome").textContent = `Hello, ${data.nickname}!`;
+    })
+    .catch (err => {
+        console.error("error: " + err);
+        localStorage.removeItem("accessToken");
+        window.location.href = "login.html";
+    });
+</script>
 </body>
 </html>
