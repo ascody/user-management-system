@@ -13,6 +13,8 @@ import tabbychiro.userManagementSystem.entity.User;
 import tabbychiro.userManagementSystem.repository.UserRepository;
 import tabbychiro.userManagementSystem.service.UserService;
 
+import java.util.Map;
+
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/users")
@@ -42,5 +44,23 @@ public class UserController {
                 .orElseThrow(() -> new UsernameNotFoundException("username: " + username + " not found"));
 
         return ResponseEntity.ok(new UserResponseDto(user));
+    }
+
+    @GetMapping("/checkEmail")
+    public ResponseEntity<Map<String, Boolean>> checkEmail(@RequestParam("email") String email) {
+        boolean isAvailable = userService.isEmailAvailable(email);
+        return ResponseEntity.ok(Map.of("available", isAvailable));
+    }
+
+    @GetMapping("/checkUsername")
+    public ResponseEntity<Map<String, Boolean>> checkUsername(@RequestParam("username") String username) {
+        boolean isAvailable = userService.isUsernameAvailable(username);
+        return ResponseEntity.ok(Map.of("available", isAvailable));
+    }
+
+    @GetMapping("/checkNickname")
+    public ResponseEntity<Map<String, Boolean>> checkNickname(@RequestParam("nickname") String nickname) {
+        boolean isAvailable = userService.isNicknameAvailable(nickname);
+        return ResponseEntity.ok(Map.of("available", isAvailable));
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import tabbychiro.userManagementSystem.dto.AuthTokenDto;
 import tabbychiro.userManagementSystem.dto.UserLoginDto;
 import tabbychiro.userManagementSystem.dto.UserRegisterDto;
@@ -56,5 +57,16 @@ public class UserServiceImpl implements UserService{
         User saved = userRepository.save(user);
 
         return new UserResponseDto(saved);
+    }
+
+    public Boolean isEmailAvailable(String email) {
+        return !userRepository.existsByEmail(email);
+    }
+
+    public Boolean isUsernameAvailable(String username) {
+        return !userRepository.existsByUsername(username);
+    }
+    public Boolean isNicknameAvailable(String nickname) {
+        return !userRepository.existsByNickname(nickname);
     }
 }

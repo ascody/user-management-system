@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+</head>
+<body>
+<h2>회원가입</h2>
+
+<form id="register-form">
+    <label for="email">이메일:</label>
+    <input type="text" id="email" name="email" required><br><br>
+    <p id="checkEmail" style="color: red;"></p>
+
+    <label for="username">아이디:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <p id="checkUsername" style="color: red;"></p>
+
+    <label for="password">비밀번호:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <p id="checkPassword" style="color: red;"></p>
+
+    <label for="nickname">닉네임:</label>
+    <input type="text" id="nickname" name="nickname" required><br><br>
+    <p id="checkNickname" style="color: red;"></p>
+
+    <button type="submit">회원가입</button>
+</form>
+<p id="message" style="color: red;"></p>
+<script>
+    function isValidEmail(email) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+    function isValidPassword(password) {
+        return password.length >= 8;
+    }
+    async function isEmailDuplicated(email) {
+        const res = await fetch(`/api/users/checkEmail?email=${encodeURIComponent(email)}`);
+        return !(await res.json()).available; // 예: { "available": true/false }
+    }
+
+    async function isUsernameDuplicated(username) {
+        const res = await fetch(`/api/users/checkUsername?username=${encodeURIComponent(username)}`);
+        return !(await res.json()).available;
+    }
+
+    async function isNicknameDuplicated(nickname) {
+        const res = await fetch(`/api/users/checkNickname?nickname=${encodeURIComponent(nickname)}`);
+        return !(await res.json()).available;
+    }
+
+    const form = document.getElementById("register-form");
+
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const nickname = document.getElementById("nickname").value;
+
+        if (!isValidEmail(email)) {
+            document.getElementById("checkEmail").textContent = "이메일 형식이 올바르지 않습니다.";
+            return;
+        }
+        if (!isValidPassword(password)) {
+            document.getElementById("checkPassword").textContent = "비밀번호는 8자 이상이어야 합니다.";
+            return;
+        }
+        if (await isEmailDuplicated(email)) {
+            document.getElementById("checkEmail").textContent = "이미 사용 중인 이메일입니다.";
+            return;
+        }
+
+        if (await isUsernameDuplicated(username)) {
+            document.getElementById("checkUsername").textContent = "이미 사용 중인 아이디입니다.";
+            return;
+        }
+
+        if (await isNicknameDuplicated(nickname)) {
+            document.getElementById("checkNickname").textContent = "이미 사용 중인 닉네임입니다.";
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/users/register", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({email, username, password, nickname})
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                document.getElementById("message").textContent = "회원가입 실패: " + errorText;
+                return;
+            }
+
+            const contentType = response.headers.get("Content-Type");
+            if (contentType && contentType.includes("application/json")) {
+                const data = await response.json();
+                console.log("회원가입 성공:", data);
+                window.location.href = "/login.html";
+            } else {
+                const text = await response.text();
+                document.getElementById("message").textContent = "응답이 JSON이 아님: " + text;
+            }
+        } catch (err) {
+            document.getElementById("message").textContent = "오류 발생: " + err.message;
+        }
+    })
+</script>
+</body>
+</html>

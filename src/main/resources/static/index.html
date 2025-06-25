@@ -1,11 +1,12 @@
 <!-- src/main/resources/static/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>Home</title>
+    <meta charset="UTF-8">
+    <title>홈</title>
 </head>
 <body>
-<h1>Welcome to User Management System</h1>
+<h1>유저 관리 시스템</h1>
 <h2 id="welcome"></h2>
 
 <script>
@@ -22,7 +23,7 @@
         return res.json();
     })
     .then (data => {
-        document.getElementById("welcome").textContent = `Hello, ${data.nickname}!`;
+        document.getElementById("welcome").textContent = `환영합니다, ${data.nickname}님!`;
     })
     .catch (err => {
         console.error("error: " + err);
