@@ -8,10 +8,13 @@
 <body>
 <h1>유저 관리 시스템</h1>
 <h2 id="welcome"></h2>
+<button id="logout">로그아웃</button>
 
 <script>
     console.log("index loaded");
     const token = localStorage.getItem("accessToken");
+
+    const logout = document.getElementById("logout");
 
     fetch("/api/users/me", {
         headers: {
@@ -30,6 +33,11 @@
         localStorage.removeItem("accessToken");
         window.location.href = "login.html";
     });
+
+    logout.addEventListener("click", () => {
+        localStorage.removeItem("accessToken");
+        window.location.href = "login.html";
+    })
 </script>
 </body>
 </html>

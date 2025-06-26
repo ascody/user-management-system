@@ -10,15 +10,21 @@ import tabbychiro.userManagementSystem.dto.AuthTokenDto;
 import tabbychiro.userManagementSystem.dto.UserLoginDto;
 import tabbychiro.userManagementSystem.dto.UserRegisterDto;
 import tabbychiro.userManagementSystem.dto.UserResponseDto;
+import tabbychiro.userManagementSystem.entity.LoginHistory;
 import tabbychiro.userManagementSystem.entity.User;
 import tabbychiro.userManagementSystem.enums.Role;
+import tabbychiro.userManagementSystem.repository.LoginHistoryRepository;
 import tabbychiro.userManagementSystem.repository.UserRepository;
 import tabbychiro.userManagementSystem.security.JwtTokenProvider;
+import tabbychiro.userManagementSystem.util.RequestUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
+    private final LoginHistoryRepository loginHistoryRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -33,6 +39,14 @@ public class UserServiceImpl implements UserService{
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid username or password");
         }
+
+        loginHistoryRepository.save(LoginHistory.builder()
+                .user(user)
+                .loginTime(LocalDateTime.now())
+                .ipAddress(RequestUtils.getClientIp())
+                .userAgent(RequestUtils.getUserAgent())
+                .success(true)
+                .build());
 
         String token = jwtTokenProvider.createToken(user.getUsername(), user.getRole());
 

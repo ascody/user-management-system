@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface LoginHistoryRepository extends JpaRepository<LoginHistory, Long> {
     List<LoginHistory> findByUserId(Long userId);
-    List<LoginHistory> findBySuccess(boolean success);
 }
