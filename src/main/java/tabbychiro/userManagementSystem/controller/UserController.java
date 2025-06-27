@@ -37,6 +37,12 @@ public class UserController {
         return ResponseEntity.ok(userService.login(dto));
     }
 
+    @DeleteMapping("/me")
+    public ResponseEntity<Boolean> deleteUser(Authentication authentication) {
+        String username = authentication.getName();
+        return ResponseEntity.ok(userService.deleteUser(username));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserResponseDto> getCurrentUser(Authentication authentication) {
         String username = authentication.getName();

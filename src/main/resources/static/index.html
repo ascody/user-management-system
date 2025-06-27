@@ -9,12 +9,14 @@
 <h1>유저 관리 시스템</h1>
 <h2 id="welcome"></h2>
 <button id="logout">로그아웃</button>
-
+<hr>
+<button id="deleteUser" color="red">회원탈퇴</button>
 <script>
     console.log("index loaded");
     const token = localStorage.getItem("accessToken");
 
     const logout = document.getElementById("logout");
+    const deleteUser = document.getElementById("deleteUser");
 
     fetch("/api/users/me", {
         headers: {
@@ -37,6 +39,32 @@
     logout.addEventListener("click", () => {
         localStorage.removeItem("accessToken");
         window.location.href = "login.html";
+    })
+
+    deleteUser.addEventListener("click", async () => {
+        const confirmDelete = confirm("정말로 탈퇴하시겠습니까?");
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch ("/api/users/me", {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.ok) {
+                alert("회원탈퇴가 완료되었습니다.");
+                window.location.href = "/login.html";
+            }
+            else {
+                const errText = await response.text();
+                alert("회원 찰최 실패: " + errText);
+            }
+        } catch (err) {
+            alert("오류 발생: " + err.message);
+        }
     })
 </script>
 </body>

@@ -1,5 +1,6 @@
 package tabbychiro.userManagementSystem.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -71,6 +72,16 @@ public class UserServiceImpl implements UserService{
         User saved = userRepository.save(user);
 
         return new UserResponseDto(saved);
+    }
+
+    @Transactional
+    public Boolean deleteUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        loginHistoryRepository.deleteByUserId(user.getId());
+        userRepository.delete(user);
+        return true;
     }
 
     public Boolean isEmailAvailable(String email) {

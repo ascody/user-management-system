@@ -9,6 +9,7 @@ import tabbychiro.userManagementSystem.dto.UserRegisterDto;
 public interface UserService {
     UserResponseDto register(UserRegisterDto dto);
     AuthTokenDto login(UserLoginDto dto);
+    Boolean deleteUser(String username);
     Boolean isEmailAvailable(String email);
     Boolean isUsernameAvailable(String username);
     Boolean isNicknameAvailable(String password);
